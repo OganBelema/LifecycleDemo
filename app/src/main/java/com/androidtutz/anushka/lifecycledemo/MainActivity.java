@@ -1,7 +1,10 @@
 package com.androidtutz.anushka.lifecycledemo;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -27,14 +30,22 @@ public class MainActivity extends AppCompatActivity {
 
         mMainActivityViewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
 
-        textView=findViewById(R.id.tvCount);
-        textView.setText("Count is: "+ mMainActivityViewModel.getInitialCount());
+        textView = findViewById(R.id.tvCount);
+
+        LiveData<Integer> count =  mMainActivityViewModel.getInitialCount();
+
+        count.observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(@Nullable Integer integer) {
+                textView.setText("Count is: "+ integer);
+            }
+        });
+
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                textView.setText("Count is: "+mMainActivityViewModel.getCurrentCount());
+                mMainActivityViewModel.getCurrentCount();
             }
         });
     }
